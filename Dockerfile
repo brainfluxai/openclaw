@@ -24,10 +24,11 @@ COPY scripts ./scripts
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build
-# Force pnpm for UI build (Bun may fail on ARM/Synology architectures)
-ENV OPENCLAW_PREFER_PNPM=1
-RUN pnpm ui:build
+# Compila apenas o core do bot, ignorando o bundle de UI que está a falhar
+RUN tsc -p tsconfig.json --noEmit false && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/write-build-info.ts
+
+# A linha abaixo foi comentada para evitar o erro de build
+# RUN pnpm ui:build
 
 ENV NODE_ENV=production
 
