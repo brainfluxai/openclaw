@@ -24,10 +24,10 @@ COPY scripts ./scripts
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-# Compila apenas o core do bot, ignorando o bundle de UI que está a falhar
-RUN tsc -p tsconfig.json --noEmit false && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/write-build-info.ts
-
-# A linha abaixo foi comentada para evitar o erro de build
+# Pula a interface visual e compila apenas o motor do bot (Sage)
+RUN tsc -p tsconfig.json --noEmit false && \
+    node --import tsx scripts/copy-hook-metadata.ts && \
+    node --import tsx scripts/write-build-info.ts
 # RUN pnpm ui:build
 
 ENV NODE_ENV=production
